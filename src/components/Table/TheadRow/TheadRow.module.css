@@ -1,0 +1,43 @@
+.theadMain {
+  position: sticky;
+  top: 73px;
+}
+
+.th {
+  font-weight: bold;
+  text-align: left;
+  padding: 5px 7px;
+  background: #ffc593;
+  font-size: clamp(10px, 0.7vw, 20px);
+  box-shadow: inset 3px 3px 10px rgba(0, 0, 0, 0.5);
+  border: 0.5px solid #000;
+  border-radius: 8px;
+  text-align: center;
+  color: #000;
+}
+
+.firstTh {
+  min-width: 87px;
+}
+
+.calendarIcon {
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+	cursor: pointer;
+	vertical-align: middle;
+  }
+
+  .clickableTh {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickableTh:hover {
+  background-color: rgb(171, 213, 241);
+}
+
+.activeTh {
+  background-color: #e0f3ff; /* нежно-голубой фон */
+  font-weight: bold;
+}

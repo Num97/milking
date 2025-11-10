@@ -1,0 +1,47 @@
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Общие стили для всех кнопок */
+.chartButton {
+  cursor: pointer;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: linear-gradient(145deg, #f8f8f8, #ececec);
+  color: #333;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+/* Hover эффект */
+.chartButton:hover {
+  background: linear-gradient(145deg, #e8e8e8, #dadada);
+  border-color: #bbb;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+
+/* Эффект нажатия */
+.chartButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* Активное состояние для кнопки скользящего среднего */
+.maButton.show {
+  background: linear-gradient(145deg, #d9edf7, #c4e3f3);
+  border-color: #bce8f1;
+  color: #31708f;
+}
+
+.maButton {
+  min-width: 250px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
