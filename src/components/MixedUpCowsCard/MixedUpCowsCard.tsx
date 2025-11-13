@@ -22,28 +22,31 @@ export const MixedUpCowsCard: React.FC<MixedUpCowsCardProps> = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.map((row) => {
-              const isHighlighted = row.times !== null && row.times >= 3;
-              return (
-                <tr
-                  key={row.id}
-                  className={`${styles.tr} ${
-                    isHighlighted ? styles.highlight : ''
-                  }`}
-                >
-                  <td className={styles.cowNumber}>{row.cow_number ?? '-'}</td>
-                  <td className={styles.cell}>{row.lot_number_assigned ?? '-'}</td>
-                  <td className={styles.cell}>{row.lot_number_milked ?? '-'}</td>
-                  <td
-                    className={`${styles.cell} ${styles.times} ${
-                      isHighlighted ? styles.timesHighlight : ''
+            {data
+              .slice()
+              .sort((a, b) => (b.times ?? 0) - (a.times ?? 0))
+              .map((row) => {
+                const isHighlighted = row.times !== null && row.times >= 3;
+                return (
+                  <tr
+                    key={row.id}
+                    className={`${styles.tr} ${
+                      isHighlighted ? styles.highlight : ''
                     }`}
                   >
-                    {row.times ?? '-'}
-                  </td>
-                </tr>
-              );
-            })}
+                    <td className={styles.cowNumber}>{row.cow_number ?? '-'}</td>
+                    <td className={styles.cell}>{row.lot_number_assigned ?? '-'}</td>
+                    <td className={styles.cell}>{row.lot_number_milked ?? '-'}</td>
+                    <td
+                      className={`${styles.cell} ${styles.times} ${
+                        isHighlighted ? styles.timesHighlight : ''
+                      }`}
+                    >
+                      {row.times ?? '-'}
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

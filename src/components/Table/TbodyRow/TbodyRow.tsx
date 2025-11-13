@@ -50,22 +50,19 @@ export const TbodyRow: React.FC<TbodyRowProps> = ({ row, index, mixedUpCows }) =
 
   return (
     <>
-      <tr
-        className={`${rowClass} ${styles.trHover}`}
-        onClick={handleClick}
-      >
-        {cells.map((value, i) => (
-          <td
-            key={i}
-            className={`${styles.td} ${i === 0 ? styles.firstTd : ""} ${
-              i === cells.length - 1 ? styles.lastTd : ""
-            }`}
-          >
-            {value}
-          </td>
-        ))}
-      </tr>
-
+    <tr className={`${rowClass} ${styles.trHover}`}>
+      {cells.map((value, i) => (
+        <td
+          key={i}
+          className={`${styles.td} ${i === 0 ? styles.firstTd : ""} ${
+            i === cells.length - 1 ? styles.lastTd : ""
+          }`}
+          onClick={value === row.mixed_up_cows ? handleClick : undefined} // <- только для этой ячейки
+        >
+          {value}
+        </td>
+      ))}
+    </tr>
       {/* Модальное окно */}
       {modalOpen && mixedUpCows && (
         <MixedUpCowsModal
