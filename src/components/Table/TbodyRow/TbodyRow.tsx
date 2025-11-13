@@ -1,26 +1,21 @@
-import React from "react";
-import type { MilkingReportRow } from "../../../types/forms";
+import React, { useState } from "react";
+import type { MilkingReportRow, MixedUpCows } from "../../../types/forms";
 import styles from "./TbodyRow.module.css";
+import { MixedUpCowsModal } from "../../MixedUpCowsModal/MixedUpCowsModal";
 
 interface TbodyRowProps {
   row: MilkingReportRow;
   index: number;
+  mixedUpCows?: MixedUpCows[];
 }
 
-export const TbodyRow: React.FC<TbodyRowProps> = ({ row, index }) => {
+export const TbodyRow: React.FC<TbodyRowProps> = ({ row, index, mixedUpCows }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   const rowClass = index % 2 === 0 ? styles.trEven : styles.trOdd;
 
-  // 🔹 форматируем время (оставляем только часы и минуты)
-  const formatTime = (time: string | null) => {
-    if (!time) return "-";
-    return time.slice(0, 5); // "HH:MM"
-  };
-
-  // 🔹 округляем числа до целого
-  const formatInt = (value: number | null) => {
-    if (value === null) return "-";
-    return Math.round(value);
-  };
+  const formatTime = (time: string | null) => (time ? time.slice(0, 5) : "-");
+  const formatInt = (value: number | null) => (value === null ? "-" : Math.round(value));
 
   const cells = [
     row.date,
@@ -47,18 +42,39 @@ export const TbodyRow: React.FC<TbodyRowProps> = ({ row, index }) => {
     row.mixed_up_cows ?? "-",
   ];
 
+  const handleClick = () => {
+    if (mixedUpCows && mixedUpCows.length > 0) {
+      setModalOpen(true);
+    }
+  };
+
   return (
-    <tr className={`${rowClass} ${styles.trHover}`}>
-      {cells.map((value, i) => (
-        <td
-          key={i}
-          className={`${styles.td} ${
-            i === 0 ? styles.firstTd : ""
-          } ${i === cells.length - 1 ? styles.lastTd : ""}`}
-        >
-          {value}
-        </td>
-      ))}
-    </tr>
+    <>
+      <tr
+        className={`${rowClass} ${styles.trHover}`}
+        onClick={handleClick}
+      >
+        {cells.map((value, i) => (
+          <td
+            key={i}
+            className={`${styles.td} ${i === 0 ? styles.firstTd : ""} ${
+              i === cells.length - 1 ? styles.lastTd : ""
+            }`}
+          >
+            {value}
+          </td>
+        ))}
+      </tr>
+
+      {/* Модальное окно */}
+      {modalOpen && mixedUpCows && (
+        <MixedUpCowsModal
+          data={mixedUpCows}
+          date={row.date}
+          numberMilking={row.number_milking ?? "-"}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
+    </>
   );
 };

@@ -6,10 +6,14 @@ import { getMilkingReport } from "./utils/api";
 import type { MilkingReportRow } from "./types/forms";
 import type { MilkingReportParams } from "./types/props";
 import { Table } from "./components/Table/Table/Table";
+import { getMixedUpCows } from "./utils/api";
+import type { MixedUpCows } from "./types/forms";
 
 function AppContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<MilkingReportRow[]>([]);
+  const [availableShifts, setAvailableShifts] = useState<number[]>([]);
+  const [mixedUpCows, setMixedUpCows] = useState<MixedUpCows[]>([]);
   const [filters, setFilters] = useState<{
   numeric: Record<string, { min: number | ""; max: number | "" }>;
   time: Record<string, { min: string; max: string }>;
@@ -39,14 +43,14 @@ const handleApplyFilters = (newFilters: {
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
 
-    const weekAgo = new Date(yesterday);
+    const weekAgo = new Date(today);
     weekAgo.setDate(weekAgo.getDate() - 7);
 
     return {
       farm: searchParams.get("farm") || "Наровчат",
       dmb: parseInt(searchParams.get("dmb") || "1"),
       date_start: searchParams.get("date_start") || formatDateLocal(weekAgo),
-      date_end: searchParams.get("date_end") || formatDateLocal(yesterday),
+      date_end: searchParams.get("date_end") || formatDateLocal(today),
     };
   };
 
@@ -57,9 +61,40 @@ const handleApplyFilters = (newFilters: {
     const fetchData = async () => {
       const response = await getMilkingReport(params);
       setData(response);
+
+      // Собираем уникальные shift_id
+      const uniqueShiftIds = Array.from(
+        new Set(response.map((row) => row.milkingshift_id).filter(Boolean))
+      );
+      setAvailableShifts(uniqueShiftIds);
     };
     fetchData();
   }, [params]);
+
+  // Получаем смешанные коровы при изменении availableShifts
+  useEffect(() => {
+    const fetchMixedUp = async () => {
+      if (!params.farm || !params.dmb) return;
+
+      // передаем все доступные milkingshift_id или выбранные через фильтры
+      const milkingshift_ids = filters.milking.length > 0 ? filters.milking : availableShifts;
+
+      if (milkingshift_ids.length === 0) {
+        setMixedUpCows([]);
+        return;
+      }
+
+      const response = await getMixedUpCows({
+        farm: params.farm,
+        dmb: params.dmb,
+        milkingshift_ids,
+      });
+
+      setMixedUpCows(response);
+    };
+
+    fetchMixedUp();
+  }, [availableShifts]);
 
   // Обновление фильтров и URL
   const handleFilterChange = (newParams: Partial<MilkingReportParams>) => {
@@ -138,7 +173,7 @@ const filteredData = data.filter((row) => {
   return (
     <div>
       <Header onFilterChange={handleFilterChange} initialParams={params} onApplyFilters={handleApplyFilters}/>
-      <Table data={filteredData} onDateChange={handleDateChange} />
+      <Table data={filteredData} onDateChange={handleDateChange} mixedUpCowsData={mixedUpCows}/>
     </div>
   );
 }

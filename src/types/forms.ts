@@ -24,4 +24,18 @@ export interface MilkingReportRow {
     percent_manual_mode: number | null;
     percent_no_milk: number | null;
     mixed_up_cows: number | null;
+    milkingshift_id: number;
+}
+
+export interface MixedUpCows {
+  id: number;
+  milking_id: number;
+  cow_id?: number | null;
+  cow_number?: number | null;
+  milkingshift_id: number;
+  lot_number_assigned?: number | null;
+  lot_number_milked?: number | null;
+  farm: string;
+  dmb: number;
+  times: number | null;
 }
